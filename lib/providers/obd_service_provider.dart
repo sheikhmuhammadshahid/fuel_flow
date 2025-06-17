@@ -39,12 +39,30 @@ class OBDModel extends ChangeNotifier {
         context: context,
         builder: (_) {
           return SizedBox(
-            height: 200,
+            height: 300,
             child: ListView.builder(
               itemCount: discoveredDevices.length,
               itemBuilder: (context, index) {
+                final device = discoveredDevices[index];
+                final deviceName = _obdService.getDeviceDisplayName(device);
+                final deviceInfo = _obdService.getDeviceInfo(device);
+                final deviceId = device.remoteId.str;
+
                 return ListTile(
-                  title: Text(discoveredDevices[index].remoteId.str),
+                  title: Text(deviceName),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('ID: $deviceId'),
+                      if (deviceInfo?.rssi != null)
+                        Text(
+                          'Signal: ${deviceInfo!.rssi} dBm',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                    ],
+                  ),
+                  leading: const Icon(Icons.bluetooth),
                   onTap: () {
                     connect(index);
                     Navigator.pop(context);

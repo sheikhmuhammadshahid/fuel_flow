@@ -4,6 +4,27 @@ import 'dart:convert';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+/// Enhanced device info to store more details
+class DeviceInfo {
+  final BluetoothDevice device;
+  final String? advertisementName;
+  final int? rssi;
+
+  DeviceInfo({required this.device, this.advertisementName, this.rssi});
+
+  String get displayName {
+    if (device.platformName.isNotEmpty) {
+      return device.platformName;
+    } else if (advertisementName != null && advertisementName!.isNotEmpty) {
+      return advertisementName!;
+    } else if (device.localName.isNotEmpty) {
+      return device.localName;
+    } else {
+      return 'Unknown Device (${device.remoteId.str.substring(0, 8)}...)';
+    }
+  }
+}
+
 /// Represents OBD-II data retrieved from the vehicle.
 class OBDData {
   final double rpm;
@@ -25,6 +46,7 @@ class OBDData {
 class OBDFullService {
   BluetoothDevice? targetDevice;
   BluetoothCharacteristic? targetCharacteristic;
+  Map<String, DeviceInfo> deviceInfoMap = {}; // Store enhanced device info
   Future<void> connectToSelectedDevice(BluetoothDevice device) async {
     try {
       // Connect to the selected device
@@ -55,14 +77,17 @@ class OBDFullService {
   Future<bool> checkBluetoothPermissions() async {
     if (await Permission.bluetoothScan.isDenied ||
         await Permission.bluetoothConnect.isDenied ||
+        await Permission.bluetoothAdvertise.isDenied ||
         await Permission.locationWhenInUse.isDenied) {
       await [
         Permission.bluetoothScan,
         Permission.bluetoothConnect,
+        Permission.bluetoothAdvertise,
         Permission.locationWhenInUse,
       ].request();
       if (await Permission.bluetoothScan.isDenied ||
           await Permission.bluetoothConnect.isDenied ||
+          await Permission.bluetoothAdvertise.isDenied ||
           await Permission.locationWhenInUse.isDenied) {
         return false;
       }
@@ -70,6 +95,7 @@ class OBDFullService {
 
     if (await Permission.bluetoothScan.isPermanentlyDenied ||
         await Permission.bluetoothConnect.isPermanentlyDenied ||
+        await Permission.bluetoothAdvertise.isPermanentlyDenied ||
         await Permission.locationWhenInUse.isPermanentlyDenied) {
       // You can guide the user to settings
       openAppSettings();
@@ -80,22 +106,12 @@ class OBDFullService {
 
   /// Connects to an OBD-II device via Bluetooth.
   Future<List<BluetoothDevice>> scanForBluetoothDevices() async {
-    // var bluetoothPermission = await Permission.bluetooth.request();
-    // var scanPermission = await Permission.bluetoothScan.request();
-    // var connectPermission = await Permission.bluetoothConnect.request();
-    // var locationPermission = await Permission.locationWhenInUse.request();
-
-    // if (!bluetoothPermission.isGranted ||
-    //     !scanPermission.isGranted ||
-    //     !connectPermission.isGranted ||
-    //     !locationPermission.isGranted) {
-    //   return [];
-    // }
     if (!(await checkBluetoothPermissions())) {
       return [];
     }
 
     List<BluetoothDevice> discoveredDevices = [];
+    Map<String, DeviceInfo> deviceInfoMap = {}; // To store enhanced device info
     StreamSubscription<List<ScanResult>>? scanSubscription;
 
     try {
@@ -111,16 +127,30 @@ class OBDFullService {
 
       // Clear any previous results
       discoveredDevices.clear();
+      deviceInfoMap.clear();
 
       // Create a completer to handle the scan completion
       final completer = Completer<List<BluetoothDevice>>();
 
       // Start scanning for all nearby devices
-      await FlutterBluePlus.startScan(timeout: Duration(seconds: 15));
+      await FlutterBluePlus.startScan(
+        timeout: Duration(seconds: 15),
+        androidUsesFineLocation: true,
+        // Scan for both classic and BLE devices
+      );
 
       // Listen to scan results
       scanSubscription = FlutterBluePlus.scanResults.listen((results) {
         for (final scanResult in results) {
+          final deviceId = scanResult.device.remoteId.str;
+
+          // Store device info including advertisement data
+          deviceInfoMap[deviceId] = DeviceInfo(
+            device: scanResult.device,
+            advertisementName: scanResult.advertisementData.localName,
+            rssi: scanResult.rssi,
+          );
+
           // Only add device if it's not already in the list
           if (!discoveredDevices.any(
             (d) => d.remoteId == scanResult.device.remoteId,
@@ -133,8 +163,38 @@ class OBDFullService {
       // Complete when scanning is done
       FlutterBluePlus.isScanning.firstWhere((isScanning) => !isScanning).then((
         _,
-      ) {
+      ) async {
         if (!completer.isCompleted) {
+          // Try to get names for devices that don't have them
+          for (final device in discoveredDevices) {
+            final deviceId = device.remoteId.str;
+            final deviceInfo = deviceInfoMap[deviceId];
+
+            // If device doesn't have a proper name, try a brief connection to get it
+            if (deviceInfo != null &&
+                deviceInfo.displayName.contains('Unknown Device') &&
+                device.platformName.isEmpty &&
+                device.localName.isEmpty) {
+              try {
+                // Very brief connection attempt to get device name
+                await device.connect(
+                  timeout: const Duration(seconds: 2),
+                  autoConnect: false,
+                );
+                await device.disconnect();
+
+                // Update device info with potentially new name
+                deviceInfoMap[deviceId] = DeviceInfo(
+                  device: device,
+                  advertisementName: deviceInfo.advertisementName,
+                  rssi: deviceInfo.rssi,
+                );
+              } catch (e) {
+                // Ignore connection errors, just continue with unknown name
+              }
+            }
+          }
+
           completer.complete(discoveredDevices);
         }
       });
@@ -296,5 +356,29 @@ class OBDFullService {
     await targetDevice?.disconnect();
     targetDevice = null;
     targetCharacteristic = null;
+  }
+
+  /// Gets the display name for a device
+  String getDeviceDisplayName(BluetoothDevice device) {
+    final deviceId = device.remoteId.str;
+    final deviceInfo = deviceInfoMap[deviceId];
+
+    if (deviceInfo != null) {
+      return deviceInfo.displayName;
+    }
+
+    // Fallback to basic device properties
+    if (device.platformName.isNotEmpty) {
+      return device.platformName;
+    } else if (device.localName.isNotEmpty) {
+      return device.localName;
+    } else {
+      return 'Unknown Device (${device.remoteId.str.substring(0, 8)}...)';
+    }
+  }
+
+  /// Gets additional device info like RSSI
+  DeviceInfo? getDeviceInfo(BluetoothDevice device) {
+    return deviceInfoMap[device.remoteId.str];
   }
 }

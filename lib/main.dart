@@ -186,6 +186,7 @@ void main() async {
   await Permission.bluetooth.request();
   await Permission.bluetoothConnect.request();
   await Permission.bluetoothScan.request();
+  await Permission.bluetoothAdvertise.request();
   FlutterBluePlus.setLogLevel(LogLevel.debug);
 
   runApp(
@@ -269,7 +270,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Card(
                   elevation: 4,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
