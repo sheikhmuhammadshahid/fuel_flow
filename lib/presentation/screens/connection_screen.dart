@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/app_theme.dart';
+import '../../core/dependency_injection.dart';
 import '../widgets/device_scan_list.dart';
+import '../widgets/permission_check_widget.dart';
 
 class ConnectionScreen extends ConsumerStatefulWidget {
   const ConnectionScreen({super.key});
@@ -18,6 +20,16 @@ class _ConnectionScreenState extends ConsumerState<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return PermissionCheckWidget(
+      requiredPermissions: const ['bluetooth', 'location'],
+      title: 'Bluetooth & Location Required',
+      description:
+          'Device scanning requires Bluetooth and Location permissions to discover nearby OBD-II devices.',
+      child: _buildConnectionScreen(context),
+    );
+  }
+
+  Widget _buildConnectionScreen(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -208,7 +220,21 @@ class _ConnectionScreenState extends ConsumerState<ConnectionScreen> {
     );
   }
 
-  void _startScan() {
+  void _startScan() async {
+    // Check and request permissions before scanning
+    final permissionService = DependencyInjection.permissionService;
+
+    // Request Bluetooth permissions
+    final hasBluetoothPermissions =
+        await permissionService.requestBluetoothPermissions();
+
+    if (!hasBluetoothPermissions) {
+      if (mounted) {
+        await permissionService.showPermissionDeniedDialog(context);
+      }
+      return;
+    }
+
     setState(() {
       _isScanning = true;
     });

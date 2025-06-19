@@ -16,6 +16,9 @@ void main() async {
   // Initialize dependencies
   await DependencyInjection.initialize();
 
+  // Request permissions on app startup
+  await _requestInitialPermissions();
+
   // Set preferred orientations
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -23,6 +26,17 @@ void main() async {
   ]);
 
   runApp(const ProviderScope(child: FuelFlowApp()));
+}
+
+/// Request essential permissions on app startup
+Future<void> _requestInitialPermissions() async {
+  try {
+    final permissionService = DependencyInjection.permissionService;
+    await permissionService.requestAllPermissions();
+  } catch (e) {
+    // Handle permission request errors gracefully
+    debugPrint('Error requesting initial permissions: $e');
+  }
 }
 
 class FuelFlowApp extends StatelessWidget {

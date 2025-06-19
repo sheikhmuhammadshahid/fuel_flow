@@ -45,5 +45,25 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Bluetooth permissions -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs Bluetooth access to connect to OBD-II devices for vehicle data monitoring and fuel tracking.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>This app needs Bluetooth access to connect to OBD-II devices for vehicle data monitoring and fuel tracking.</string>
+	
+	<!-- Location permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to track fuel efficiency based on your trips and to scan for nearby Bluetooth devices.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to track fuel efficiency based on your trips and to scan for nearby Bluetooth devices.</string>
+	
+	<!-- Camera permission (if QR code scanning is added later) -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app may use the camera to scan QR codes on fuel receipts or device setup.</string>
+	
+	<!-- Local Network permission (for WiFi devices) -->
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>This app needs local network access to connect to WiFi-enabled OBD-II devices.</string>
 </dict>
 </plist>
