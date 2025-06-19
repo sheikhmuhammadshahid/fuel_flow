@@ -1,0 +1,13 @@
+targets:
+  $default:
+    builders:
+      riverpod_generator:
+        options:
+          # The syntax to use for the generated providers
+          # Can be either "riverpod" or "hooks_riverpod"
+          generator_syntax: "riverpod"
+      json_serializable:
+        options:
+          # Options for json_serializable
+          explicit_to_json: true
+      hive_generator: {}
