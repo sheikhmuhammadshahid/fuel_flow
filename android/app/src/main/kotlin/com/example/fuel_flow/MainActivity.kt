@@ -1,4 +1,4 @@
-package com.example.fuel_flow
+package com.ignivex.fuel_flow
 
 import io.flutter.embedding.android.FlutterActivity
 

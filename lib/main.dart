@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,10 +6,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/app_theme.dart';
 import 'core/dependency_injection.dart';
-import 'presentation/screens/splash_screen.dart';
+import 'firebase_options.dart';
+import 'presentation/screens/auth_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Initialize Hive
   await Hive.initFlutter();
@@ -50,7 +55,7 @@ class FuelFlowApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const SplashScreen(),
+      home: const AuthWrapper(),
     );
   }
 }

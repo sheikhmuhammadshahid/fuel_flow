@@ -17,14 +17,26 @@ class DashboardScreen extends ConsumerWidget {
     final currentVehicleData = ref.watch(currentVehicleDataProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        elevation: 0,
         title: Text(
           'Dashboard',
-          style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.w600,
+            color: Colors.white,
+          ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(Icons.notifications_outlined, color: Colors.white),
+            onPressed: () {
+              // Show notifications
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
             onPressed: () {
               // Refresh data
             },
@@ -203,26 +215,53 @@ class DashboardScreen extends ConsumerWidget {
     final isConnected = connectionState.isConnected;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color:
+        gradient:
             isConnected
-                ? AppColors.success.withValues(alpha: 0.1)
-                : AppColors.error.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+                ? LinearGradient(
+                  colors: [
+                    AppColors.success.withOpacity(0.1),
+                    AppColors.success.withOpacity(0.05),
+                  ],
+                )
+                : LinearGradient(
+                  colors: [
+                    AppColors.error.withOpacity(0.1),
+                    AppColors.error.withOpacity(0.05),
+                  ],
+                ),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isConnected ? AppColors.success : AppColors.error,
           width: 1,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: (isConnected ? AppColors.success : AppColors.error)
+                .withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(
-            isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
-            color: isConnected ? AppColors.success : AppColors.error,
-            size: 24,
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isConnected ? AppColors.success : AppColors.error,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              isConnected
+                  ? Icons.bluetooth_connected
+                  : Icons.bluetooth_disabled,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,19 +269,24 @@ class DashboardScreen extends ConsumerWidget {
                 Text(
                   isConnected ? 'OBD-II Connected' : 'Not Connected',
                   style: GoogleFonts.inter(
+                    fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: isConnected ? AppColors.success : AppColors.error,
                   ),
                 ),
-                if (isConnected && connectionState.connectedDeviceName != null)
-                  Text(
-                    connectionState.connectedDeviceName!,
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      color: Theme.of(context).textTheme.bodyMedium?.color,
-                    ),
+                const SizedBox(height: 4),
+                Text(
+                  isConnected
+                      ? connectionState.connectedDeviceName ??
+                          'Device connected'
+                      : 'Connect to view vehicle data',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    color: AppColors.grey600,
                   ),
-                if (connectionState.errorMessage != null)
+                ),
+                if (connectionState.errorMessage != null) ...[
+                  const SizedBox(height: 4),
                   Text(
                     connectionState.errorMessage!,
                     style: GoogleFonts.inter(
@@ -250,15 +294,42 @@ class DashboardScreen extends ConsumerWidget {
                       color: AppColors.error,
                     ),
                   ),
+                ],
               ],
             ),
           ),
           if (!isConnected)
-            TextButton(
-              onPressed: () {
-                // Navigate to connection screen
-              },
-              child: const Text('Connect'),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                ),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: ElevatedButton(
+                onPressed: () {
+                  // Navigate to connection screen
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Text(
+                  'Connect',
+                  style: GoogleFonts.inter(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
         ],
       ),

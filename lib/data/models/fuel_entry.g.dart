@@ -66,23 +66,23 @@ class FuelEntryAdapter extends TypeAdapter<FuelEntry> {
 // **************************************************************************
 
 FuelEntry _$FuelEntryFromJson(Map<String, dynamic> json) => FuelEntry(
-  id: json['id'] as String,
-  timestamp: DateTime.parse(json['timestamp'] as String),
-  litersAdded: (json['litersAdded'] as num).toDouble(),
-  cost: (json['cost'] as num?)?.toDouble(),
-  location: json['location'] as String?,
-  odometer: (json['odometer'] as num?)?.toDouble(),
-  isAutoDetected: json['isAutoDetected'] as bool? ?? false,
-  notes: json['notes'] as String?,
-);
+      id: json['id'] as String,
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      litersAdded: (json['litersAdded'] as num).toDouble(),
+      cost: (json['cost'] as num?)?.toDouble(),
+      location: json['location'] as String?,
+      odometer: (json['odometer'] as num?)?.toDouble(),
+      isAutoDetected: json['isAutoDetected'] as bool? ?? false,
+      notes: json['notes'] as String?,
+    );
 
 Map<String, dynamic> _$FuelEntryToJson(FuelEntry instance) => <String, dynamic>{
-  'id': instance.id,
-  'timestamp': instance.timestamp.toIso8601String(),
-  'litersAdded': instance.litersAdded,
-  'cost': instance.cost,
-  'location': instance.location,
-  'odometer': instance.odometer,
-  'isAutoDetected': instance.isAutoDetected,
-  'notes': instance.notes,
-};
+      'id': instance.id,
+      'timestamp': instance.timestamp.toIso8601String(),
+      'litersAdded': instance.litersAdded,
+      'cost': instance.cost,
+      'location': instance.location,
+      'odometer': instance.odometer,
+      'isAutoDetected': instance.isAutoDetected,
+      'notes': instance.notes,
+    };

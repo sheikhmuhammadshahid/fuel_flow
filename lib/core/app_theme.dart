@@ -2,14 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF2563EB);
-  static const Color primaryDark = Color(0xFF1D4ED8);
-  static const Color secondary = Color(0xFF10B981);
-  static const Color accent = Color(0xFFF59E0B);
+  // Primary brand colors inspired by the fuel theme - matching the design
+  static const Color primary = Color(
+    0xFFFF5722,
+  ); // Orange/Red matching the images
+  static const Color primaryDark = Color(0xFFE64A19); // Darker orange
+  static const Color secondary = Color(0xFFFF7043); // Lighter orange
+  static const Color accent = Color(0xFFFFA726); // Amber accent
+
+  // Status colors
   static const Color error = Color(0xFFEF4444);
   static const Color success = Color(0xFF22C55E);
-  static const Color warning = Color(0xFFF59E0B);
+  static const Color warning = Color(0xFFFFA726);
   static const Color info = Color(0xFF3B82F6);
+
+  // Gradient colors for fuel theme - matching the design images
+  static const Color gradientStart = Color(0xFFFF5722);
+  static const Color gradientEnd = Color(0xFFFF7043);
 
   // Neutral colors
   static const Color white = Color(0xFFFFFFFF);
@@ -30,6 +39,10 @@ class AppColors {
   static const Color surfaceDark = Color(0xFF1F2937);
   static const Color background = Color(0xFFF9FAFB);
   static const Color backgroundDark = Color(0xFF111827);
+
+  // Card and container colors
+  static const Color cardBackground = Color(0xFFFFFFFF);
+  static const Color containerLight = Color(0xFFF8F9FA);
 }
 
 class AppTheme {
@@ -49,28 +62,37 @@ class AppTheme {
       ),
       textTheme: _textTheme,
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.white,
-        foregroundColor: AppColors.grey900,
+        backgroundColor: AppColors.primary,
+        foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: GoogleFonts.inter(
           fontSize: 18,
           fontWeight: FontWeight.w600,
-          color: AppColors.grey900,
+          color: Colors.white,
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       cardTheme: CardThemeData(
-        color: AppColors.white,
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        color: AppColors.cardBackground,
+        elevation: 3,
+        shadowColor: AppColors.grey200,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          elevation: 2,
+          shadowColor: AppColors.primary.withOpacity(0.3),
+          textStyle: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

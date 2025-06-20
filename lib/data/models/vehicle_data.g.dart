@@ -87,26 +87,25 @@ class VehicleDataAdapter extends TypeAdapter<VehicleData> {
 // **************************************************************************
 
 VehicleData _$VehicleDataFromJson(Map<String, dynamic> json) => VehicleData(
-  timestamp: DateTime.parse(json['timestamp'] as String),
-  speed: (json['speed'] as num?)?.toDouble(),
-  rpm: (json['rpm'] as num?)?.toDouble(),
-  engineTemp: (json['engineTemp'] as num?)?.toDouble(),
-  fuelLevel: (json['fuelLevel'] as num?)?.toDouble(),
-  vin: json['vin'] as String?,
-  errorCodes:
-      (json['errorCodes'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList() ??
-      const [],
-  batteryVoltage: (json['batteryVoltage'] as num?)?.toDouble(),
-  throttlePosition: (json['throttlePosition'] as num?)?.toDouble(),
-  fuelPressure: (json['fuelPressure'] as num?)?.toDouble(),
-  coolantTemp: (json['coolantTemp'] as num?)?.toDouble(),
-  intakeAirTemp: (json['intakeAirTemp'] as num?)?.toDouble(),
-  maf: (json['maf'] as num?)?.toDouble(),
-  fuelTrimShort: (json['fuelTrimShort'] as num?)?.toDouble(),
-  fuelTrimLong: (json['fuelTrimLong'] as num?)?.toDouble(),
-);
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      speed: (json['speed'] as num?)?.toDouble(),
+      rpm: (json['rpm'] as num?)?.toDouble(),
+      engineTemp: (json['engineTemp'] as num?)?.toDouble(),
+      fuelLevel: (json['fuelLevel'] as num?)?.toDouble(),
+      vin: json['vin'] as String?,
+      errorCodes: (json['errorCodes'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      batteryVoltage: (json['batteryVoltage'] as num?)?.toDouble(),
+      throttlePosition: (json['throttlePosition'] as num?)?.toDouble(),
+      fuelPressure: (json['fuelPressure'] as num?)?.toDouble(),
+      coolantTemp: (json['coolantTemp'] as num?)?.toDouble(),
+      intakeAirTemp: (json['intakeAirTemp'] as num?)?.toDouble(),
+      maf: (json['maf'] as num?)?.toDouble(),
+      fuelTrimShort: (json['fuelTrimShort'] as num?)?.toDouble(),
+      fuelTrimLong: (json['fuelTrimLong'] as num?)?.toDouble(),
+    );
 
 Map<String, dynamic> _$VehicleDataToJson(VehicleData instance) =>
     <String, dynamic>{

@@ -17,10 +17,14 @@ class CustomBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppColors.grey400.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -28,25 +32,25 @@ class CustomBottomNavigation extends StatelessWidget {
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               _buildNavItem(
                 context,
-                icon: Icons.dashboard,
+                icon: Icons.dashboard_rounded,
                 label: 'Dashboard',
                 index: 0,
               ),
               _buildNavItem(
                 context,
-                icon: Icons.bluetooth,
+                icon: Icons.bluetooth_rounded,
                 label: 'Connect',
                 index: 1,
               ),
               _buildNavItem(
                 context,
-                icon: Icons.local_gas_station,
+                icon: Icons.local_gas_station_rounded,
                 label: 'Fuel',
                 index: 2,
               ),
@@ -70,43 +74,46 @@ class CustomBottomNavigation extends StatelessWidget {
     required int index,
   }) {
     final isSelected = currentIndex == index;
-    final theme = Theme.of(context);
 
     return GestureDetector(
       onTap: () => onTap(index),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color:
+          gradient:
               isSelected
-                  ? AppColors.primary.withValues(alpha: 0.1)
-                  : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+                  ? LinearGradient(
+                    colors: [
+                      AppColors.gradientStart.withValues(alpha: 0.15),
+                      AppColors.gradientEnd.withValues(alpha: 0.1),
+                    ],
+                  )
+                  : null,
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              color:
-                  isSelected
-                      ? AppColors.primary
-                      : theme.iconTheme.color?.withValues(alpha: 0.6),
-              size: 24,
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? Colors.white : AppColors.grey500,
+                size: 20,
+              ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               label,
               style: GoogleFonts.inter(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                color:
-                    isSelected
-                        ? AppColors.primary
-                        : theme.textTheme.bodyMedium?.color?.withValues(
-                          alpha: 0.6,
-                        ),
+                fontSize: 10,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                color: isSelected ? AppColors.primary : AppColors.grey500,
               ),
             ),
           ],

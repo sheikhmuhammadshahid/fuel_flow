@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1038834166136",
+    "project_id": "fuelflow-11489",
+    "storage_bucket": "fuelflow-11489.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038834166136:android:83f48de74aae45abc8c08d",
+        "android_client_info": {
+          "package_name": "com.ignivex.fuel_flow"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1038834166136-anpe6iq1o79coqi6rttqlai06df451hq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ignivex.fuel_flow",
+            "certificate_hash": "a037ba6fd509709cfd8ce1992b5e4b671f6fb4ec"
+          }
+        },
+        {
+          "client_id": "1038834166136-2qi7gpftiebgo1endtkcgmsigttgoacd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwPlINWlsPHSg7VnAV8Rr-8TN-Nc-GqgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1038834166136-2qi7gpftiebgo1endtkcgmsigttgoacd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1038834166136-gfk0jgm3na8eo3ukf07noa55u0hj8egd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.fuelFlow"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
